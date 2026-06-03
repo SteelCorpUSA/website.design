@@ -669,5 +669,27 @@
     }, 3000);
   }
 </script>
+<script>
+  /* Auto-resize: report this page's height to the parent (Squarespace) so the
+     embedding iframe can size itself responsively with no inner scrollbar. */
+  (function () {
+    function postHeight() {
+      var h = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.offsetHeight
+      );
+      parent.postMessage({ steelcorpPanelsHeight: h }, "*");
+    }
+    window.addEventListener("load", postHeight);
+    window.addEventListener("resize", postHeight);
+    // Re-report after images/fonts settle and on later layout shifts.
+    [300, 800, 1500, 3000].forEach(function (t) { setTimeout(postHeight, t); });
+    if (window.ResizeObserver) {
+      new ResizeObserver(postHeight).observe(document.body);
+    }
+  })();
+</script>
 </body>
 </html>
